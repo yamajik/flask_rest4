@@ -17,9 +17,9 @@ class Resource(object):
             if not name.startswith('_'):
                 setattr(self, name, output_json(getattr(self, name)))
 
-
-def extend(**extends):
-    def add_extends(cls):
-        cls._extends_ = extends
-        return cls
-    return add_extends
+    @staticmethod
+    def extend(**extends):
+        def add_extends(cls):
+            cls._extends_ = extends
+            return cls
+        return add_extends

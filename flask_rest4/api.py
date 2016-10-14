@@ -4,7 +4,7 @@ from .utils import inject_url_rule
 from .resource import output_json
 
 
-class ApiRule(object):
+class Api(object):
     def __init__(self, app_or_blueprint):
         self.app = app_or_blueprint
         self.routes = {}

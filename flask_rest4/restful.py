@@ -6,7 +6,7 @@ from .constants import DEFAULT_ENDPOINTS
 from .utils import classfy_dict, inject_url_rule
 
 
-class Rule(object):
+class RESTful(object):
     def __init__(self, app_or_blueprint):
         self.app = app_or_blueprint
         self.routes = {}

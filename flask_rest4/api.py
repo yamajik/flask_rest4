@@ -7,7 +7,7 @@ from .resource import output_json
 class Api(object):
     def __init__(self, app_or_blueprint):
         self.app = app_or_blueprint
-        self.routes = {}
+        self.routes = []
 
     def route(self, rule, methods):
         def decorator(func):
@@ -17,3 +17,5 @@ class Api(object):
 
     def register_api(self, rule, func, methods):
         inject_url_rule(self.app, rule, func, methods)
+        route = (rule, methods, func)
+        self.routes.append(route)

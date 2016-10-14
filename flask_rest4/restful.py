@@ -36,7 +36,7 @@ class RESTful(object):
                     rule += (func_name + '/')
                 func = getattr(resource, func_name)
                 inject_url_rule(self.app, rule, func, methods)
-                return rule, methods, func_name
+                return rule, methods, func
 
             batch_routes = [reject_rule(func_name, methods, True)
                             for func_name, methods in batch_endpoints.items()]

@@ -1,7 +1,7 @@
 # coding=utf-8
 
 import json
-from functools import wraps
+import functools
 
 from flask import make_response
 
@@ -9,7 +9,7 @@ from .headers import make_cors_headers
 
 
 def output_json(func):
-    @wraps(func)
+    @functools.wraps(func)
     def decorate(*args, **kwargs):
         result = func(*args, **kwargs)
         data, status_code = load_result(result)

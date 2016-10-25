@@ -15,7 +15,8 @@ class Resource(object):
                             if not name.startswith('_')}
         for name in dir(self):
             if not name.startswith('_'):
-                setattr(self, name, output_json(getattr(self, name)))
+                func = output_json(getattr(self, name))
+                setattr(self, name, func)
 
     @staticmethod
     def extend(**extends):

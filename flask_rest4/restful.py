@@ -13,7 +13,8 @@ class RESTful(object):
 
     def route(self, rule):
         def decorator(Resource):
-            return self.register_resource(rule, Resource)
+            self.register_resource(rule, Resource)
+            return Resource
         return decorator
 
     def register_resource(self, rule, Resource):

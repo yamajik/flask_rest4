@@ -14,6 +14,6 @@ def classfy_dict(data, func):
     return match, not_match
 
 
-def inject_url_rule(app_or_blueprint, rule, func, methods):
+def inject_url_rule(app_or_blueprint, rule, methods, func):
     methods = methods.split()
     app_or_blueprint.add_url_rule(rule, view_func=func, methods=methods)

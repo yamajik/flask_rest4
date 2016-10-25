@@ -15,7 +15,7 @@ class Api(object):
             return self.register_api(rule, func, methods)
         return decorator
 
-    def register_api(self, rule, func, methods):
-        inject_url_rule(self.app, rule, func, methods)
+    def register_api(self, rule, methods, func):
+        inject_url_rule(self.app, rule, methods, func)
         route = (rule, methods, func)
         self.routes.append(route)

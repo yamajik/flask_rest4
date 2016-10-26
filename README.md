@@ -33,7 +33,7 @@ The resource will create an url map as following:
 | --- | --- | --- |
 | /books/ | GET | list |
 | /books/ | POST | create |
-| /books/`<book_id>`/ | GET | list |
+| /books/`<book_id>`/ | GET | get |
 | /books/`<book_id>`/ | PUT | update |
 | /books/`<book_id>`/ | DELETE | delete |
 
@@ -76,7 +76,7 @@ The url map has been updated as shown.
 | /books/ | GET | list |
 | /books/ | POST | create |
 | /books/batch_delete/ | POST | batch_delete |
-| /books/`<book_id>`/ | GET | list |
+| /books/`<book_id>`/ | GET | get |
 | /books/`<book_id>`/ | PUT | update |
 | /books/`<book_id>`/ | DELETE | delete |
 

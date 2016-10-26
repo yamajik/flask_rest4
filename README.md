@@ -37,6 +37,12 @@ The resource will create an url map as following:
 | /books/`<book_id>`/ | PUT | update |
 | /books/`<book_id>`/ | DELETE | delete |
 
+INSTALL
+---
+```bash
+pip install flask_rest4
+```
+
 EXTEND
 ---
 If you want a simple `batch delete` api, add a simple batch delete view function.
@@ -77,8 +83,10 @@ The url map has been updated as shown.
 If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `extend` decorator
 
 ``` python
+from flask_rest4 import RESTful, Resource, extend
+
 @restful.route('/books/<book_id>')
-@Resource.extend(batch_delete='PUT')
+@extend(batch_delete='PUT')
 class book(Resource):
     def list(self):
         pass

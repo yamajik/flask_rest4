@@ -11,7 +11,7 @@ from setuptools import setup
 setup(
     name='flask_rest4',
     version='0.1.0',
-    url='https://github.com/kennethreitz/flask_rest4',
+    url='https://github.com/squirrelmajik/flask_rest4',
     license='See License',
     author='majik',
     author_email='me@yamajik.com',

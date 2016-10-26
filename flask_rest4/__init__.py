@@ -1,5 +1,5 @@
 # coding=utf-8
 
-from .api import Api
-from .restful import RESTful
+from .api import Api  # noqa
+from .restful import RESTful  # noqa
 from .resource import Resource  # noqa

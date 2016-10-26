@@ -74,7 +74,7 @@ The url map has been updated as shown.
 | /books/`<book_id>`/ | PUT | update |
 | /books/`<book_id>`/ | DELETE | delete |
 
-If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `Resource.extend`
+If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `extend` decorator
 
 ``` python
 @restful.route('/books/<book_id>')

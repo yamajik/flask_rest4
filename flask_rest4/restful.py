@@ -36,7 +36,8 @@ class RESTful(object):
                 if func_name not in DEFAULT_ENDPOINTS:
                     rule += (func_name + '/')
                 func = getattr(resource, func_name)
-                inject_url_rule(self.app, rule, func, methods)
+                endpoint = r'{}_{}'.format(resource_name, func_name)
+                inject_url_rule(self.app, rule, methods, endpoint, func)
                 return rule, methods, func
 
             batch_routes = [reject_rule(func_name, methods, True)

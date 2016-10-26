@@ -18,9 +18,9 @@ class Resource(object):
                 func = output_json(getattr(self, name))
                 setattr(self, name, func)
 
-    @staticmethod
-    def extend(**extends):
-        def add_extends(cls):
-            cls._extends_ = extends
-            return cls
-        return add_extends
+
+def extend(**extends):
+    def add_extends(cls):
+        cls._extends_ = extends
+        return cls
+    return add_extends

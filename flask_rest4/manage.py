@@ -19,4 +19,4 @@ def list_common_apis(apis):
 
 
 def route_string(rule, methods, func):
-    return "{} {} {}".format(rule, methods, func.func_name)
+    return "{} {} {}".format(rule, methods, func.__name__)

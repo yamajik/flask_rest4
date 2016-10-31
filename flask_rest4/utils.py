@@ -18,3 +18,10 @@ def inject_url_rule(app_or_blueprint, rule, methods, endpoint, func):
     methods = methods.split()
     app_or_blueprint.add_url_rule(rule, endpoint=endpoint,
                                   view_func=func, methods=methods)
+
+
+def auto_complete_rule(rule):
+    if not rule.endswith('/'):
+        return rule + '/'
+    else:
+        return rule

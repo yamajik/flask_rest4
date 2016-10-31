@@ -5,19 +5,19 @@ Flask-REST4
 -------------
 Elegant RESTful API for your Flask apps.
 """
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
     name='flask_rest4',
-    version='0.1.5',
+    version='0.1.6',
+    packages=find_packages(),
     url='https://github.com/squirrelmajik/flask_rest4',
     license='See License',
     author='majik',
     author_email='me@yamajik.com',
     description='Elegant RESTful API for your Flask apps.',
     long_description=__doc__,
-    py_modules=['flask_rest4'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',

@@ -12,7 +12,7 @@ class Api(object):
     def route(self, rule, methods):
         def decorator(func):
             func = output_json(func)
-            self.register_api(rule, func, methods)
+            self.register_api(rule, methods, func)
             return func
         return decorator
 

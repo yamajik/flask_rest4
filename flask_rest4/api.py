@@ -11,12 +11,12 @@ class Api(object):
 
     def route(self, rule, methods):
         def decorator(func):
-            func = output_json(func)
             self.register_api(rule, methods, func)
             return func
         return decorator
 
     def register_api(self, rule, methods, func):
+        func = output_json(func)
         endpoint = func.__name__
         rule = auto_complete_rule(rule)
         inject_url_rule(self.app, rule, methods, endpoint, func)

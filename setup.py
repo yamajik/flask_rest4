@@ -10,7 +10,7 @@ from setuptools import setup
 
 setup(
     name='flask_rest4',
-    version='0.1.3',
+    version='0.1.5',
     url='https://github.com/squirrelmajik/flask_rest4',
     license='See License',
     author='majik',

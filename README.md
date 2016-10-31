@@ -26,7 +26,7 @@ class book(Resource):
     def delete(self, book_id):
         pass
 ```
-
+Both work well with blueprint.
 The resource will create an url map as following:
 
 | route | methods | view function |
@@ -105,4 +105,30 @@ class book(Resource):
 
     def batch_delete(self):
         pass
+```
+
+COMMON API RESPOND WITH JSON DATA
+---
+``` python
+from flask_rest4 import Api
+
+
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/echo', 'GET')
+def echo():
+    pass
+```
+
+Or use `output_json` decorator with flask route
+``` python
+from flask_rest4.response import output_json
+
+app = Flask(__name__)
+
+@app.route('/echo', 'GET')
+@output_json
+def echo():
+    pass
 ```

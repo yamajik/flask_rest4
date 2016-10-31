@@ -3,7 +3,7 @@
 import re
 
 from .constants import DEFAULT_ENDPOINTS
-from .utils import classfy_dict, inject_url_rule
+from .utils import classfy_dict, inject_url_rule, auto_complete_rule
 
 
 class RESTful(object):
@@ -50,8 +50,7 @@ class RESTful(object):
 
 
 def _analyze_rule(rule):
-    if not rule.endswith('/'):
-        rule += '/'
+    rule = auto_complete_rule(rule)
 
     match = re.match(r'^(.*)<\w+?>/$', rule)
     if not match:

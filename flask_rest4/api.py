@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from .utils import inject_url_rule
+from .utils import inject_url_rule, auto_complete_rule
 from .resource import output_json
 
 
@@ -18,6 +18,7 @@ class Api(object):
 
     def register_api(self, rule, methods, func):
         endpoint = func.__name__
+        rule = auto_complete_rule(rule)
         inject_url_rule(self.app, rule, methods, endpoint, func)
         route = (rule, methods, func)
         self.routes.append(route)

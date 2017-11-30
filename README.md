@@ -4,12 +4,12 @@ Elegant RESTful API for  Flask apps.
 
 ``` python
 from flask import Flask
-from flask_rest4 import RESTful, Resource
+from flask_rest4 import Api, Resource
 
 app = Flask(__name__)
-restful = RESTful(app)
+api = Api(app)
 
-@restful.route('/books/<book_id>')
+@api.route('/books/<book_id>')
 class book(Resource):
     def list(self):
         pass
@@ -48,7 +48,13 @@ EXTEND
 If you want a simple `batch delete` api, add a simple batch delete view function.
 
 ``` python
-@restful.route('/books/<book_id>')
+from flask import Flask
+from flask_rest4 import Api, Resource
+
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/books/<book_id>')
 class book(Resource):
     def list(self):
         pass
@@ -80,13 +86,16 @@ The url map has been updated as shown.
 | /books/`<book_id>`/ | PUT | update |
 | /books/`<book_id>`/ | DELETE | delete |
 
-If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `extend` decorator
+If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `methods` decorator
 
 ``` python
-from flask_rest4 import RESTful, Resource, extend
+from flask import Flask
+from flask_rest4 import Api, Resource, methods
 
-@restful.route('/books/<book_id>')
-@extend(batch_delete='PUT')
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/books/<book_id>')
 class book(Resource):
     def list(self):
         pass
@@ -103,6 +112,7 @@ class book(Resource):
     def delete(self, book_id):
         pass
 
+    @methods("PUT")
     def batch_delete(self):
         pass
 ```

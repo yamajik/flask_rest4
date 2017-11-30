@@ -1,7 +1,9 @@
-# coding=utf-8
+'''Rest4
 
-from .api import Api, Resource  # noqa
-from .decorators import suffix, methods, batch  #noqa
+Rest4 module
+'''
 
+from .api import Api, Resource, batch  # noqa
+from .response import output_json  # noqa
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

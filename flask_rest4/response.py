@@ -1,23 +1,25 @@
-# coding=utf-8
+'''Rest4 response helpers
 
-import json
+Response helper functions for Rest4
+'''
+
+
 import functools
+import json
 
-from flask import make_response, current_app, request
+from flask import current_app, make_response, request
+
+from . import settings
 
 
 def output_json(func):
     @functools.wraps(func)
     def decorate(*args, **kwargs):
-        if not request.is_xhr:
-            data = "This is not an ajax request."
-            return make_response(data, 403, default_headers())
         result = func(*args, **kwargs)
         data, status_code = load_result(result)
-        if not data and current_app.debug:
-            data = {"message": "This is a debug message."}
+        if data is None and current_app.debug:
+            data = settings.DEFAULT_DEBUG_MESSAGE_DATA
         return make_json_response(data, status_code or 200)
-    decorate.name = func.__name__
     return decorate
 
 
@@ -25,25 +27,27 @@ def load_result(result):
     if isinstance(result, tuple) and len(result) == 2:
         return result
     else:
-        return result, 200
+        return result, 200 if result is not None else 204
 
 
 def make_json_response(data, status_code, headers=None):
     headers = headers or {}
     headers.update(default_headers())
-    data = json.dumps(data)
+    data = safe_jsonify(data)
     return make_response(data, status_code, headers)
 
 
-@output_json
-def default_option(*args, **kargs):
-    return {"message": "I'm alive."}
+def safe_jsonify(data):
+    try:
+        return json.dumps(data) if data is not None else ""
+    except:
+        return str(data)
 
 
 def default_headers():
-    headers = {}
+    headers = settings.DEFAULT_HEADERS
     headers.update(ajax_headers())
-    headers.update(cors_headers(allowed_origins='*'))
+    headers.update(cors_headers())
     return headers
 
 
@@ -51,31 +55,22 @@ def ajax_headers():
     return {"Content-Type": "application/json"}
 
 
-def cors_headers(allowed_origins=None,
-                 allowed_credentials=False,
-                 max_age=86400):
-    headers = dict()
-    headers["Access-Control-Allow-Headers"] = _make_allow_headers()
-    headers_options = "OPTIONS, HEAD, POST, PUT, DELETE"
-    headers["Access-Control-Allow-Methods"] = headers_options
-
+def cors_headers():
+    allow_headers = request.headers.get("Access-Control-Request-Headers",
+                                        settings.CORS_HEADERS_ALLOW_HEADERS)
+    allow_methods = settings.CORS_HEADERS_ALLOW_METHODS
+    allowed_origins = settings.CORS_HEADERS_ALLOW_ORIGIN
     if '*' in allowed_origins:
-        headers["Access-Control-Allow-Origin"] = '*'
+        allowed_origins = '*'
     elif request.headers.get('Origin') in allowed_origins:
-        headers["Access-Control-Allow-Origin"] = request.headers['Origin']
+        allowed_origins = request.headers['Origin']
+    allow_credentials = str(settings.CORS_HEADERS_ALLOW_CREDENTIALS).lower()
+    max_age = settings.CORS_HEADERS_MAX_AGE
 
-    if allowed_credentials:
-        headers["Access-Control-Allow-Credentials"] = 'true'
-
-    headers["Access-Control-Max-Age"] = max_age
-    return headers
-
-
-def _make_allow_headers():
-    request_allows = request.headers.get(
-        "Access-Control-Request-Headers", None)
-    if request_allows:
-        return request_allows
-    else:
-        base_set = ["origin", "accept", "content-type", "authorization"]
-        return ", ".join(base_set)
+    return {
+        "Access-Control-Allow-Headers": allow_headers,
+        "Access-Control-Allow-Methods": allow_methods,
+        "Access-Control-Allow-Origin": allowed_origins,
+        "Access-Control-Allow-Credentials": allow_credentials,
+        "Access-Control-Max-Age": max_age
+    }

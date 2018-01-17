@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_rest4 import Api, Resource, methods, suffix, batch
+from flask_rest4 import Api, Resource, batch
 
 
 app = Flask(__name__)
@@ -26,11 +26,9 @@ class A(Resource):
     def batch_delete(self):
         pass
 
-    @methods('PUT')
     def delete_test_1(self, a_id):
         pass
 
-    @suffix('delete_suffix')
     def delete_test_2(self, a_id):
         pass
 

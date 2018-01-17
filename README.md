@@ -1,6 +1,6 @@
 Flask_REST4
 ---
-Elegant RESTful API for  Flask apps.
+Elegant RESTful API for Flask apps.
 
 ``` python
 from flask import Flask

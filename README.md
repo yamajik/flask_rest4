@@ -43,7 +43,7 @@ The resource will create an url map as following:
 pip install flask_rest4
 ```
 
-## Much More
+## MUCH MORE
 
 Let do some improved work for the User Api:
 1. Use `register` instead of `create`
@@ -273,13 +273,15 @@ def echo():
     pass
 ```
 
-## Flask_REST4 is full support for *flask blueprint*
+## FLASK_REST4 IS FULL SUPPORT FOR *FLASK BLUEPRINT*
 
 ``` python
 from flask_rest4 import Api
 
 app = Flask(__name__)
-api = Api(app)
+blueprint = Blueprint('blueprint', __name__)
+app.register_blueprint(blueprint)
+api = Api(blueprint)
 
 @api.route('/echo', 'GET')
 def echo():

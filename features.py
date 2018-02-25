@@ -1,12 +1,15 @@
 from flask import Flask
-from flask_rest4 import Api, Resource, batch
+from flask_rest4 import Api, Resource, batch, alias
 
 
 app = Flask(__name__)
 api = Api(app)
 
+
+# register resource endpoint
+
 @api.route("/A/<a_id>/")
-@api.route("/B/<a_id>/")
+@api.route("/A2/<a_id>/")
 class A(Resource):
     def list(self):
         pass
@@ -23,27 +26,34 @@ class A(Resource):
     def delete(self, a_id):
         pass
 
+    # keyword "batch" specifies this action as a batch action
     def batch_delete(self):
         pass
 
-    def delete_test_1(self, a_id):
+    def action1(self, a_id):
         pass
 
-    def delete_test_2(self, a_id):
+    def action2(self, a_id):
         pass
 
+    # specifies this action as a batch action
     @batch
-    def delete_test_3(self):
+    def action3(self):
         pass
 
+    # override default OPTION method for "/A/<a_id>/"
     def option(self, a_id):
         pass
 
+    # override default OPTION method for "/A/"
     def options(self):
         pass
 
-@api.route("/CE/<c_id>/")
+
+# add common api endpoint
+
 @api.route("/C/<c_id>/")
+@api.route("/C2/<c_id>/")
 def c_post(c_id):
     pass
 
@@ -55,10 +65,11 @@ def c_put(c_id):
 def d_post_put(d_id):
     pass
 
-@api.route("/e/<e_id>/", "POST", "PUT")
+@api.route("/E/<e_id>/", "POST", "PUT")
 def e_post_put(e_id):
     pass
 
-print(api)
 
-app.run(host='0.0.0.0', port=8000, debug=True)
+if __name__ == '__main__':
+    print(api)
+    app.run(host='0.0.0.0', port=8000, debug=True)

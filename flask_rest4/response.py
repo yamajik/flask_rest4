@@ -18,7 +18,9 @@ def output_json(func):
         result = func(*args, **kwargs)
         data, status_code = load_result(result)
         if data is None and current_app.debug:
-            data = settings.DEFAULT_DEBUG_MESSAGE_DATA
+            data = settings.DEFAULT_DEBUG_MESSAGE_DATA.copy()
+            data[settings.ENDPOINT_KEY_NAME] = str(func)
+            status_code = 200
         return make_json_response(data, status_code or 200)
     return decorate
 

@@ -1,127 +1,257 @@
-Flask_REST4
----
+# Flask_REST4
+
 Elegant RESTful API for Flask apps.
 
 ``` python
 from flask import Flask
-from flask_rest4 import Api, Resource
+from flask_rest4 import Api, Resource, batch, alias
 
 app = Flask(__name__)
 api = Api(app)
 
-@api.route('/books/<book_id>')
-class book(Resource):
+@api.route("/users/<user_id>/")
+class User(Resource):
     def list(self):
         pass
 
     def create(self):
         pass
 
-    def get(self, book_id):
+    def get(self, user_id):
         pass
 
-    def update(self, book_id):
+    def update(self, user_id):
         pass
 
-    def delete(self, book_id):
+    def delete(self, user_id):
         pass
 ```
-Both work well with blueprint.
+
 The resource will create an url map as following:
 
-| route | methods | view function |
-| --- | --- | --- |
-| /books/ | GET | list |
-| /books/ | POST | create |
-| /books/`<book_id>`/ | GET | get |
-| /books/`<book_id>`/ | PUT | update |
-| /books/`<book_id>`/ | DELETE | delete |
+| route               | methods | view function |
+| ------------------- | ------- | ------------- |
+| /users/             | GET     | list          |
+| /users/             | POST    | create        |
+| /users/`<user_id>`/ | GET     | get           |
+| /users/`<user_id>`/ | PUT     | update        |
+| /users/`<user_id>`/ | DELETE  | delete        |
 
-INSTALL
----
+## INSTALL
+
 ```bash
 pip install flask_rest4
 ```
 
-EXTEND
----
-If you want a simple `batch delete` api, add a simple batch delete view function.
+## Much More
+
+Let do some improved work for the User Api:
+1. Use `register` instead of `create`
+2. Add `login` api
+3. Add `batch_delete` api
+4. Add `invite` api
+
+### alias *register* as *create* with `alias` decorator
 
 ``` python
 from flask import Flask
-from flask_rest4 import Api, Resource
+from flask_rest4 import Api, Resource, alias
 
 app = Flask(__name__)
 api = Api(app)
 
-@api.route('/books/<book_id>')
-class book(Resource):
+@api.route('/users/<user_id>')
+class user(Resource):
     def list(self):
         pass
 
-    def create(self):
+    # use the rule as create
+    @alias("create")
+    def register(self):
         pass
 
-    def get(self, book_id):
+    def get(self, user_id):
         pass
 
-    def update(self, book_id):
+    def update(self, user_id):
         pass
 
-    def delete(self, book_id):
-        pass
-
-    def batch_delete(self):
+    def delete(self, user_id):
         pass
 ```
 
 The url map has been updated as shown.
 
-| route | methods | view function |
-| --- | --- | --- |
-| /books/ | GET | list |
-| /books/ | POST | create |
-| /books/batch_delete/ | POST | batch_delete |
-| /books/`<book_id>`/ | GET | get |
-| /books/`<book_id>`/ | PUT | update |
-| /books/`<book_id>`/ | DELETE | delete |
+| route               | methods | view function |
+| ------------------- | ------- | ------------- |
+| /users/             | GET     | list          |
+| /users/             | POST    | register      |
+| /users/`<user_id>`/ | GET     | get           |
+| /users/`<user_id>`/ | PUT     | update        |
+| /users/`<user_id>`/ | DELETE  | delete        |
 
-If you want to set the methods of `batch delete` api as  `PUT`( The default value is `POST` ), use `methods` decorator
+### Add *login* api for url */users/* (Batch Api) with `batch` decorator
 
 ``` python
 from flask import Flask
-from flask_rest4 import Api, Resource, methods
+from flask_rest4 import Api, Resource, alias, batch
 
 app = Flask(__name__)
 api = Api(app)
 
-@api.route('/books/<book_id>')
-class book(Resource):
+@api.route('/users/<user_id>')
+class user(Resource):
     def list(self):
         pass
 
-    def create(self):
+    # use the rule as create
+    @alias("create")
+    def register(self):
         pass
 
-    def get(self, book_id):
+    # specify this action as a batch action
+    @batch
+    def login(self):
         pass
 
-    def update(self, book_id):
+    def get(self, user_id):
         pass
 
-    def delete(self, book_id):
+    def update(self, user_id):
         pass
 
-    @methods("PUT")
-    def batch_delete(self):
+    def delete(self, user_id):
         pass
 ```
 
-COMMON API RESPOND WITH JSON DATA
----
+The url map has been updated as shown.
+
+| route               | methods | view function |
+| ------------------- | ------- | ------------- |
+| /users/             | GET     | list          |
+| /users/             | POST    | register      |
+| /users/             | PUT     | extras        |
+|                     |         | - login       |
+| /users/`<user_id>`/ | GET     | get           |
+| /users/`<user_id>`/ | PUT     | update        |
+| /users/`<user_id>`/ | DELETE  | delete        |
+
+*login* is under control of *extras(batch action controller)*
+
+### Add *batch_delete* to *extras(batch action controller)*
+
+``` python
+from flask import Flask
+from flask_rest4 import Api, Resource, alias, batch
+
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/users/<user_id>')
+class user(Resource):
+    def list(self):
+        pass
+
+    # use the rule as create
+    @alias("create")
+    def register(self):
+        pass
+
+    # specify this action as a batch action
+    @batch
+    def login(self):
+        pass
+
+    # keyword "batch" specifies this action as a batch action
+    def batch_delete(self):
+        pass
+
+    def get(self, user_id):
+        pass
+
+    def update(self, user_id):
+        pass
+
+    def delete(self, user_id):
+        pass
+```
+
+The url map has been updated as shown.
+
+| route               | methods | view function  |
+| ------------------- | ------- | -------------- |
+| /users/             | GET     | list           |
+| /users/             | POST    | register       |
+| /users/             | PUT     | extras         |
+|                     |         | - login        |
+|                     |         | - batch_delete |
+| /users/`<user_id>`/ | GET     | get            |
+| /users/`<user_id>`/ | PUT     | update         |
+| /users/`<user_id>`/ | DELETE  | delete         |
+
+
+### Add *invite* api for url */users/<user_id>/* without anything
+
+``` python
+from flask import Flask
+from flask_rest4 import Api, Resource, alias, batch
+
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/users/<user_id>')
+class user(Resource):
+    def list(self):
+        pass
+
+    # use the rule as create
+    @alias("create")
+    def register(self):
+        pass
+
+    # specify this action as a batch action
+    @batch
+    def login(self):
+        pass
+
+    # keyword "batch" specifies this action as a batch action
+    def batch_delete(self):
+        pass
+
+    def get(self, user_id):
+        pass
+
+    def update(self, user_id):
+        pass
+
+    def delete(self, user_id):
+        pass
+
+    def invite(self, user_id):
+        pass
+```
+
+The url map has been updated as shown.
+
+| route               | methods | view function  |
+| ------------------- | ------- | -------------- |
+| /users/             | GET     | list           |
+| /users/             | POST    | register       |
+| /users/             | PUT     | extras         |
+|                     |         | - login        |
+|                     |         | - batch_delete |
+| /users/`<user_id>`/ | GET     | get            |
+| /users/`<user_id>`/ | PUT     | update         |
+| /users/`<user_id>`/ | DELETE  | delete         |
+| /users/`<user_id>`/ | POST    | extra          |
+|                     |         | - invite       |
+
+*extra* is a action controller the same as *extras*
+
+## COMMON API RESPOND WITH JSON DATA
+
 ``` python
 from flask_rest4 import Api
-
 
 app = Flask(__name__)
 api = Api(app)
@@ -142,3 +272,23 @@ app = Flask(__name__)
 def echo():
     pass
 ```
+
+## Flask_REST4 is full support for *flask blueprint*
+
+``` python
+from flask_rest4 import Api
+
+app = Flask(__name__)
+api = Api(app)
+
+@api.route('/echo', 'GET')
+def echo():
+    pass
+```
+
+## CHECKOUT FOR MORE FEATURES
+
+- [example.py](https://github.com/SquirrelMajik/flask_rest4/blob/master/example.py)
+- [features.py](https://github.com/SquirrelMajik/flask_rest4/blob/master/features.py)
+- demos
+    - [Tip](https://github.com/SquirrelMajik/tip-server)

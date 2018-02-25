@@ -107,17 +107,17 @@ class Resource(object):
         self.endpoints = [self._endpoint(e) for e in self._real_endpoints()]
         self.rule = rule
 
-    def extras(self, *args, **kargs):
-        return self._extras_endpoint(*args, **kargs)
+    def extras(self, *args, **kwargs):
+        return self._extras_endpoint(*args, **kwargs)
 
-    def extra(self, *args, **kargs):
-        return self._extra_endpoint(*args, **kargs)
+    def extra(self, *args, **kwargs):
+        return self._extra_endpoint(*args, **kwargs)
 
-    def options(self, *args, **kargs):
-        return default_option(*args, **kargs)
+    def options(self, *args, **kwargs):
+        return default_option(*args, **kwargs)
 
-    def option(self, *args, **kargs):
-        return default_option(*args, **kargs)
+    def option(self, *args, **kwargs):
+        return default_option(*args, **kwargs)
 
     def _endpoint(self, endpoint):
         endpoint = Endpoint(self, endpoint)
@@ -126,17 +126,15 @@ class Resource(object):
             extra_map[endpoint.func_name] = endpoint
         return endpoint
 
-    @property
-    def _extras_endpoint(self):
-        endpoint_name = request.json.get("endpoint")
+    def _extras_endpoint(self, *args, **kwargs):
+        endpoint_name = request.json.get(settings.ENDPOINT_KEY_NAME)
         endpoint = self._extras_map.get(endpoint_name)
-        return endpoint or abort(404)
+        return endpoint(*args, **kwargs) if endpoint else abort(404)
 
-    @property
-    def _extra_endpoint(self):
-        endpoint_name = request.json.get("endpoint")
+    def _extra_endpoint(self, *args, **kwargs):
+        endpoint_name = request.json.get(settings.ENDPOINT_KEY_NAME)
         endpoint = self._extra_map.get(endpoint_name)
-        return endpoint or abort(404)
+        return endpoint(*args, **kwargs) if endpoint else abort(404)
 
     def _real_endpoints(self):
         return (getattr(self, name) for name in dir(self)
@@ -153,6 +151,7 @@ class Endpoint(object):
     def __init__(self, resource, func):
         self.resource = resource
         self.func_name = func.__name__
+        self.alias = getattr(func, 'alias', self.func_name)
         self.name = "{}.{}".format(self.resource.name, self.func_name)
         self.batch = self._is_batch(func)
         self.methods, self.extra = self._get_methods_and_extra()
@@ -161,16 +160,16 @@ class Endpoint(object):
     def _is_batch(self, func):
         keywords = settings.BATCH_FUNCTION_KEYWORDS
         return getattr(func, 'batch', None) or \
-            any(keyword in self.func_name for keyword in keywords)
+            any(keyword in self.alias for keyword in keywords)
 
     def _get_methods_and_extra(self):
         methods_map = settings.FUNCTION_METHODS_MAP
         default = methods_map['extras'] if self.batch else methods_map['extra']
-        method = methods_map.get(self.func_name)
+        method = methods_map.get(self.alias)
         return (method or default,), not method
 
-    def __call__(self, *arg, **kargs):
-        return self.func(*arg, **kargs)
+    def __call__(self, *arg, **kwargs):
+        return self.func(*arg, **kwargs)
 
     def __repr__(self):
         return "<Endpoint {}>".format(self.name)
@@ -187,14 +186,21 @@ class CommonApi(object):
         self.func = response.output_json(func)
         self.rule = rule
 
-    def __call__(self, *arg, **kargs):
-        return self.func(*arg, **kargs)
+    def __call__(self, *arg, **kwargs):
+        return self.func(*arg, **kwargs)
 
     def __repr__(self):
         return "<CommonApi {}>".format(self.name)
 
     def __str__(self):
         return "<CommonApi {}>".format(self.name)
+
+
+def alias(alias_name):
+    def decorator(func):
+        func.alias = alias_name
+        return func
+    return decorator
 
 
 def batch(func):
@@ -222,7 +228,7 @@ def rule_add_suffix(rule, suffix):
     return auto_complete_rule(rule + suffix)
 
 
-def default_option(*args, **kargs):
+def default_option(*args, **kwargs):
     return settings.DEFAULT_OPTION_RESPONSE_DATA
 
 
